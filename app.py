@@ -3,17 +3,22 @@ import psycopg2
 
 app = Flask(__name__)
 
-conn = psycopg2.connect(
-    host="localhost",
-    database="employeedb",
-    user="postgres",
-    password="12345"
-)
-cur = conn.cursor()
+
+def get_db_connection():
+    conn = psycopg2.connect(
+        host="db",
+        database="employeedb",
+        user="postgres",
+        password="12345",
+        port="5432"
+    )
+    return conn
 
 
 @app.route('/employees', methods=['GET'])
 def get_employees():
+    conn = get_db_connection()
+    cur = conn.cursor()
     cur.execute("SELECT * FROM employee")
     rows = cur.fetchall()
     return jsonify(rows)
@@ -21,6 +26,8 @@ def get_employees():
 
 @app.route('/employees', methods=['POST'])
 def create_employee():
+    conn = get_db_connection()
+    cur = conn.cursor()
     data = request.get_json()
     name = data['name']
     age = data['age']
@@ -37,6 +44,8 @@ def create_employee():
 
 @app.route('/employees/<string:name>', methods=['PUT'])
 def update_employee(name):
+    conn = get_db_connection()
+    cur = conn.cursor()
     data = request.get_json()
     age = data['age']
     education = data['education']
@@ -52,6 +61,8 @@ def update_employee(name):
 
 @app.route('/employees/<string:name>', methods=['DELETE'])
 def delete_employee(name):
+    conn = get_db_connection()
+    cur = conn.cursor()
     cur.execute("DELETE FROM employee WHERE name=%s", (name,))
     conn.commit()
     return jsonify({'message': 'Employee deleted successfully'})

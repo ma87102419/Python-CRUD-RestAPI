@@ -8,7 +8,7 @@ Build the docker container and database while in this directory:
 
 ## Start the application
 
-Run `python app.py` and the application is served at `http://localhost:8000/employees`
+The application is served at `http://localhost:8000/employees`
 
 You can make different HTTP requests to the server:
 
